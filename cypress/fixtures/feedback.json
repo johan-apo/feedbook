@@ -1,0 +1,42 @@
+{
+  "posts": [
+    {
+      "topic": "Add dark theme option",
+      "description": "Our college website should have a dark theme option",
+      "relatedTo": "Generic College",
+      "comments": [
+        {
+          "comment": "I think we should add a dark theme option to our website",
+          "author": "John Doe",
+          "date": "2022-05-16"
+        },
+        {
+          "comment": "No dev will ever do that",
+          "author": "James Bond",
+          "date": "2022-01-09"
+        }
+      ],
+      "upvotes": 12,
+      "downvotes": -3
+    },
+    {
+      "topic": "Add dark theme option",
+      "description": "Our college website should have a dark theme option",
+      "relatedTo": "Generic College",
+      "comments": [
+        {
+          "comment": "I think we should add a dark theme option to our website",
+          "author": "John Doe",
+          "date": "2022-05-16"
+        },
+        {
+          "comment": "No dev will ever do that",
+          "author": "James Bond",
+          "date": "2022-01-09"
+        }
+      ],
+      "upvotes": 12,
+      "downvotes": -3
+    }
+  ]
+}

@@ -7,15 +7,15 @@ Cypress.Commands.add("login", (username, password) => {
 
   Cypress.log({
     name: "login",
-    message: `Logging in with username: ${username}`,
     displayName: "LOGIN",
+    message: [`🔐 Authenticating | ${username}`],
   });
 
   cy.session(
     args,
     () => {
       cy.visit("/");
-      cy.get("button").contains("Log in").click();
+      cy.getBySel("log_in").contains("Log in").click();
 
       cy.origin(auth0origin, { args }, ({ username, password }) => {
         cy.get('input[id="username"]', { log: false }).type(username);

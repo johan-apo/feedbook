@@ -1,10 +1,15 @@
 export {};
 
 describe("Auth", () => {
-  beforeEach(() => {
-    cy.login(Cypress.env("auth0_username"), Cypress.env("auth0_password"));
+  beforeEach(() => {});
+
+  it.only("should let a visitor to log out", () => {
+    cy.login(Cypress.env("auth0_email"), Cypress.env("auth0_password"));
     cy.visit("/");
+    cy.getBySel("profile-button").click();
+    cy.getBySel("log_out").click();
+    cy.getBySel("signup_login_buttons").should("exist");
   });
 
-  it("should have content for authenticated user", () => {});
+  it("should redirect the user when not authenticated", () => {});
 });

@@ -43,7 +43,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
     >
       <Group>
         <Avatar src={image} radius="xl" />
-        <div style={{ flex: 1 }}>
+        <p style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
             {name}
           </Text>
@@ -51,7 +51,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
           <Text color="dimmed" size="xs">
             {email}
           </Text>
-        </div>
+        </p>
 
         {icon || <ChevronRight size={16} />}
       </Group>
@@ -61,7 +61,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 
 const ProfileMenu = ({ email, nickname, picture }: UserButtonProps) => {
   return (
-    <Group position="center">
+    <Group position="center" data-test="profile-button">
       <Menu withArrow>
         <Menu.Target>
           <UserButton picture={picture} nickname={nickname} email={email} />
@@ -71,7 +71,11 @@ const ProfileMenu = ({ email, nickname, picture }: UserButtonProps) => {
           <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
           <Divider />
           <a href="/api/auth/logout">
-            <Menu.Item color="red" icon={<Logout size={14} />}>
+            <Menu.Item
+              data-test="log_out"
+              color="red"
+              icon={<Logout size={14} />}
+            >
               Log out
             </Menu.Item>
           </a>

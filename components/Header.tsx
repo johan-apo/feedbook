@@ -4,24 +4,28 @@ import ProfileMenu from "./ProfileMenu";
 
 const UserSkeleton = () => {
   return (
-    <div style={{ width: "10rem", display: "flex", alignItems: "center" }}>
+    <p style={{ width: "10rem", display: "flex", alignItems: "center" }}>
       <Skeleton mr="xs" height={40} circle />
-      <div style={{ flex: 1 }}>
+      <p style={{ flex: 1 }}>
         <Skeleton height={10} radius="xs" />
         <Skeleton height={6} mt="0.5rem" radius="xs" />
-      </div>
-    </div>
+      </p>
+    </p>
   );
 };
 
 const SignUpLogInButtons = () => {
   return (
-    <Group>
+    <Group data-test="signup_login_buttons">
       <a href="/api/auth/signup">
-        <Button variant="filled">Sign Up</Button>
+        <Button data-test="sign_up" variant="filled">
+          Sign Up
+        </Button>
       </a>
       <a href="/api/auth/login">
-        <Button variant="outline">Log in</Button>
+        <Button data-test="log_in" variant="outline">
+          Log in
+        </Button>
       </a>
     </Group>
   );

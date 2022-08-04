@@ -43,7 +43,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
     >
       <Group>
         <Avatar src={image} radius="xl" />
-        <p style={{ flex: 1 }}>
+        <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
             {name}
           </Text>
@@ -51,7 +51,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
           <Text color="dimmed" size="xs">
             {email}
           </Text>
-        </p>
+        </div>
 
         {icon || <ChevronRight size={16} />}
       </Group>

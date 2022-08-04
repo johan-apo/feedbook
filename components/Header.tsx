@@ -4,13 +4,13 @@ import ProfileMenu from "./ProfileMenu";
 
 const UserSkeleton = () => {
   return (
-    <p style={{ width: "10rem", display: "flex", alignItems: "center" }}>
+    <div style={{ width: "10rem", display: "flex", alignItems: "center" }}>
       <Skeleton mr="xs" height={40} circle />
-      <p style={{ flex: 1 }}>
+      <div style={{ flex: 1 }}>
         <Skeleton height={10} radius="xs" />
         <Skeleton height={6} mt="0.5rem" radius="xs" />
-      </p>
-    </p>
+      </div>
+    </div>
   );
 };
 

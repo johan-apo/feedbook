@@ -7,8 +7,9 @@ import {
   Menu,
   UnstyledButton,
   Divider,
-  Button,
 } from "@mantine/core";
+import Link from "next/link";
+import { useUser } from "@auth0/nextjs-auth0";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   picture: string;
@@ -60,6 +61,8 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 );
 
 const ProfileMenu = ({ email, nickname, picture }: UserButtonProps) => {
+  const { user } = useUser();
+
   return (
     <Group position="center" data-test="profile-button">
       <Menu withArrow>
@@ -67,10 +70,12 @@ const ProfileMenu = ({ email, nickname, picture }: UserButtonProps) => {
           <UserButton picture={picture} nickname={nickname} email={email} />
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item icon={<User size={14} />}>Profile</Menu.Item>
+          <Link href={`/${user?.nickname}`}>
+            <Menu.Item icon={<User size={14} />}>Profile</Menu.Item>
+          </Link>
           <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
           <Divider />
-          <a href="/api/auth/logout">
+          <Link href="/api/auth/logout">
             <Menu.Item
               data-test="log_out"
               color="red"
@@ -78,7 +83,7 @@ const ProfileMenu = ({ email, nickname, picture }: UserButtonProps) => {
             >
               Log out
             </Menu.Item>
-          </a>
+          </Link>
         </Menu.Dropdown>
       </Menu>
     </Group>

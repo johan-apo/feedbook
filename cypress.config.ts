@@ -7,6 +7,7 @@ dotenv.config();
 export default defineConfig({
   env: {
     auth0_email: process.env.AUTH0_EMAIL,
+    auth0_username: process.env.AUTH0_USERNAME,
     auth0_password: process.env.AUTH0_PASSWORD,
     auth0_domain: process.env.AUTH0_DOMAIN,
     auth0_audience: process.env.AUTH0_AUDIENCE,

@@ -1,10 +1,12 @@
-import { Divider } from "@mantine/core";
+import { Divider, Text } from "@mantine/core";
 
 const Footer = () => {
   return (
     <footer>
       <Divider />
-      <p>An app made by Johan 😎</p>
+      <Text mt="sm" align="center">
+        An app made by Johan
+      </Text>
     </footer>
   );
 };

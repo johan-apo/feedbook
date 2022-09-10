@@ -6,9 +6,9 @@ import { useAppSelector } from "../../app/hooks";
 import AddPostModal from "../AddPostModal";
 import FeedbackPost from "../FeedbackPost";
 
-export default function RightPanel() {
+const RightPanel = () => {
   const posts = useAppSelector((state) => state.posts.value);
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
 
   const [opened, setOpened] = useState(false);
 
@@ -33,8 +33,10 @@ export default function RightPanel() {
         </Paper>
       )}
       {posts.map((post) => {
-        return <FeedbackPost data={post} key={post.id} />;
+        return <FeedbackPost data={post} key={post.id} withAuthor />;
       })}
     </>
   );
-}
+};
+
+export default RightPanel;

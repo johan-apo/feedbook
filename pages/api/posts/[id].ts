@@ -1,6 +1,10 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import prismaClient from "../../../lib/prisma";
+import {
+  deletePostById,
+  getLikeByAuthorIdAndPostId,
+  likeOrDislikePost,
+} from "../../../prisma/queries";
 import { getUserIdFromAuth0 } from "../../../utils";
 
 export default withApiAuthRequired(async function handler(
@@ -16,50 +20,27 @@ export default withApiAuthRequired(async function handler(
   const currentAuthenticatedUser = getUserIdFromAuth0(session);
 
   switch (method) {
+    // Like and unlike the post
     case "PATCH":
       try {
         if (postId && typeof postId == "string") {
-          const likeDocument = await prismaClient.like.findFirst({
-            where: {
-              authorId: currentAuthenticatedUser,
-              postId,
-            },
+          const retrievedLike = await getLikeByAuthorIdAndPostId({
+            authorId: currentAuthenticatedUser,
+            postId,
           });
 
-          const thePostIsLiked = likeDocument != null;
-          if (thePostIsLiked) {
-            const result = await prismaClient.post.update({
-              where: {
-                id: postId,
-              },
-              data: {
-                likes: {
-                  delete: {
-                    id: likeDocument.id,
-                  },
-                },
-              },
-              include: {
-                likes: true,
-              },
+          const postIsLiked = retrievedLike != null;
+          if (postIsLiked) {
+            const result = await likeOrDislikePost({
+              postId,
+              idFromLike: retrievedLike.id,
             });
 
             res.status(200).json(result);
           } else {
-            const result = await prismaClient.post.update({
-              where: {
-                id: postId,
-              },
-              data: {
-                likes: {
-                  create: {
-                    authorId: currentAuthenticatedUser,
-                  },
-                },
-              },
-              include: {
-                likes: true,
-              },
+            const result = await likeOrDislikePost({
+              postId,
+              idFromUser: currentAuthenticatedUser,
             });
 
             res.status(200).json(result);
@@ -72,14 +53,7 @@ export default withApiAuthRequired(async function handler(
     case "DELETE":
       try {
         if (postId && typeof postId == "string") {
-          const result = await prismaClient.post.delete({
-            where: {
-              id: postId,
-            },
-            include: {
-              likes: true,
-            },
-          });
+          const result = await deletePostById(postId);
           res.status(200).json(result);
         }
       } catch (error) {

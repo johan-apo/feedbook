@@ -1,5 +1,6 @@
 import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Group, Skeleton } from "@mantine/core";
+import Link from "next/link";
 import ProfileMenu from "./ProfileMenu";
 
 const UserSkeleton = () => {
@@ -37,7 +38,9 @@ const Header: React.FC = () => {
   return (
     <header>
       <Group position="apart">
-        <h3>Feedbook</h3>
+        <Link href="/">
+          <h3>Feedbook</h3>
+        </Link>
         {isLoading ? (
           <UserSkeleton />
         ) : user ? (

@@ -1,7 +1,7 @@
 import { useUser } from "@auth0/nextjs-auth0";
 import { Paper, Text } from "@mantine/core";
 
-export default function LeftPanel() {
+const LeftPanel = () => {
   const { user } = useUser();
 
   return (
@@ -20,4 +20,6 @@ export default function LeftPanel() {
       {user && <Text size="xs">{user.email}</Text>}
     </Paper>
   );
-}
+};
+
+export default LeftPanel;

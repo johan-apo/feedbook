@@ -1,16 +1,16 @@
 import { Button, Group, Modal, MultiSelect, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { Post } from "@prisma/client";
 import { useState } from "react";
 import { addPost } from "../app/features/posts/postsSlice";
 import { useAppDispatch } from "../app/hooks";
-import axiosInstance from "../lib/axios";
+import type { NewPostData } from "../prisma/queries";
+import { createPostRequest } from "../prisma/request";
 
 export default function AddPostModal({ opened, setOpened }: any) {
   const dispatch = useAppDispatch();
 
-  const form = useForm<Pick<Post, "title" | "body" | "tags">>({
+  const form = useForm<NewPostData>({
     initialValues: {
       title: "",
       body: "",
@@ -24,11 +24,9 @@ export default function AddPostModal({ opened, setOpened }: any) {
     "Needs feature",
   ]);
 
-  async function handleSubmit(values: typeof form.values) {
+  async function handleSubmit(formData: typeof form.values) {
     try {
-      const { data: createdPost } = await axiosInstance.post("/posts", {
-        ...values,
-      });
+      const createdPost = await createPostRequest(formData);
       form.reset();
       dispatch(addPost(createdPost));
       setOpened(false);
@@ -37,7 +35,6 @@ export default function AddPostModal({ opened, setOpened }: any) {
         message: error.response.data.description,
         color: "red",
       });
-      // console.log(error);
     }
   }
 

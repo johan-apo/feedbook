@@ -4,7 +4,7 @@ import {
   withApiAuthRequired,
 } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
-import prismaClient from "../../../lib/prisma";
+import { createPost } from "../../../prisma/queries";
 import { getUserIdFromAuth0 } from "../../../utils";
 
 export default withApiAuthRequired(async function handler(
@@ -18,20 +18,14 @@ export default withApiAuthRequired(async function handler(
   switch (method) {
     case "POST":
       try {
-        const createdPost = await prismaClient.post.create({
-          data: {
-            title: body.title,
-            body: body.body,
-            authorId: userId,
-            tags: body.tags,
-          },
-          include: {
-            likes: true,
-          },
+        const createdPost = await createPost({
+          title: body.title,
+          body: body.body,
+          authorId: userId,
+          tags: body.tags,
         });
         res.status(201).json(createdPost);
       } catch (error) {
-        console.error(error);
         res.status(500).json(error);
       }
       break;

@@ -1,12 +1,8 @@
-import { Post } from "@prisma/client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { Posts, Post, CreatedPost } from "../../../prisma/queries";
 import { RootState } from "../../store";
 
-interface PostsState {
-  value: Post[];
-}
-
-const initialState: PostsState = {
+const initialState: { value: Posts } = {
   value: [],
 };
 
@@ -14,13 +10,13 @@ export const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    setPosts: (state, action: PayloadAction<Post[]>) => {
+    setPosts: (state, action: PayloadAction<Posts>) => {
       state.value = action.payload;
     },
     addPost: (state, action: PayloadAction<Post>) => {
       state.value.unshift(action.payload);
     },
-    updatePost: (state, action: PayloadAction<Post>) => {
+    updatePost: (state, action: PayloadAction<any>) => {
       const updatedPostId = action.payload.id;
       const expiredPostIndex = state.value.findIndex((post) => {
         return post.id === updatedPostId;

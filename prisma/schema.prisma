@@ -10,11 +10,12 @@ generator client {
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
-  username  String?
+  username  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Post      Post[]
-  Like      Like[]
+  picture   String?
+  posts     Post[]
+  likes     Like[]
 
   @@map("users")
 }
@@ -28,7 +29,6 @@ model Post {
   authorId  String   @db.ObjectId
   likes     Like[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@map("posts")
 }

@@ -1,40 +1,40 @@
-import { useUser } from "@auth0/nextjs-auth0";
-import {
-  Anchor,
-  Avatar,
-  Button,
-  Container,
-  Grid,
-  Group,
-  Text,
-  FileButton,
-} from "@mantine/core";
-import { InferGetServerSidePropsType } from "next";
+import { UserProfile, useUser } from "@auth0/nextjs-auth0";
+import { Avatar, Button, Grid, Group, Text } from "@mantine/core";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  PreviewData,
+} from "next";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import Layout from "../../components/Layout";
-import Link from "next/link";
 import { getPostsByUsername } from "../../prisma/queries";
 import FeedbackPost from "../../components/FeedbackPost";
+import type { ParsedUrlQuery } from "querystring";
 
-const Profile = ({
-  data,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+type UserProfileData = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+interface WithData {
+  data: UserProfileData["data"];
+}
+
+interface LeftProps extends WithData {
+  username: string | string[] | undefined;
+  user: UserProfile | undefined;
+}
+
+type RightProps = WithData;
+
+/* -------------------------------------------------------------------------- */
+/*                                   Profile                                  */
+/* -------------------------------------------------------------------------- */
+const Profile = ({ data }: UserProfileData) => {
   const {
     query: { username },
   } = useRouter();
   const { user } = useUser();
-  const [file, setFile] = useState<File | null>(null);
 
   const userNotFound = data == null;
-
-  useEffect(() => {
-    if (file) {
-      console.log(file);
-    } else {
-      console.log("It's empy");
-    }
-  }, [file]);
 
   if (userNotFound) {
     return <Text>User not found</Text>;
@@ -42,51 +42,71 @@ const Profile = ({
 
   return (
     <Grid>
-      <Grid.Col md={12} lg={4}>
-        <Group align="center">
-          <Avatar src={data.picture} size="xl" />
-          <div>
-            <Text size="xl" weight="bold">
-              {username}
-            </Text>
-            {user?.nickname && user.nickname === username && (
-              <>
-                <FileButton onChange={setFile} accept="image/png,image/jpeg">
-                  {(props) => (
-                    <Button {...props}>Change profile picture</Button>
-                  )}
-                </FileButton>
-                {file && (
-                  <Text size="sm" align="center" mt="sm">
-                    Picked file: {file.name}
-                  </Text>
-                )}
-              </>
-            )}
-          </div>
-        </Group>
-      </Grid.Col>
-      <Grid.Col md={12} lg={8}>
-        <Text>Your feedbacks:</Text>
-        {data &&
-          data.posts.map((post) => {
-            return <FeedbackPost key={post.id} data={post} />;
-          })}
-      </Grid.Col>
+      <Left data={data} user={user} username={username} />
+      <Right data={data} />
     </Grid>
   );
 };
 
-export const getServerSideProps = async (context: any) => {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
   const username = context.query.username;
 
-  if (username == undefined || typeof username !== "string")
-    return { props: {} };
+  const isUsernameAnArrayOrUndefined =
+    username == undefined || typeof username !== "string";
+
+  if (isUsernameAnArrayOrUndefined) return { props: {} };
 
   const data = await getPostsByUsername(username);
   return { props: { data } };
 };
 
+/* -------------------------------------------------------------------------- */
+/*                                    Left                                    */
+/* -------------------------------------------------------------------------- */
+const Left = ({ data, username, user }: LeftProps) => {
+  const thereIsALoggedinUser = !!user;
+
+  const isCurrentUserCheckingTheirProfile =
+    thereIsALoggedinUser && user.nickname === username;
+
+  const dataExists = data!;
+
+  return (
+    <Grid.Col md={12} lg={4}>
+      <Group align="center">
+        <Avatar src={dataExists.picture} size="xl" />
+        <div>
+          <Text size="xl" weight="bold">
+            {username}
+          </Text>
+          {isCurrentUserCheckingTheirProfile && (
+            <Button>Edit my profile</Button>
+          )}
+        </div>
+      </Group>
+    </Grid.Col>
+  );
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                    Right                                   */
+/* -------------------------------------------------------------------------- */
+const Right = ({ data }: RightProps) => {
+  const dataExists = data!;
+
+  return (
+    <Grid.Col md={12} lg={8}>
+      <Text>Your feedbacks:</Text>
+      {dataExists.posts.map((post) => {
+        return <FeedbackPost key={post.id} data={post} />;
+      })}
+    </Grid.Col>
+  );
+};
+
+/* ---------------------------- Layout and export --------------------------- */
 Profile.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
 export default Profile;

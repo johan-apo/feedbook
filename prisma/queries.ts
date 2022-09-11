@@ -8,6 +8,10 @@ type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
 export type Posts = Awaited<ReturnType<typeof getPosts>>;
 export type Post = ArrElement<Posts>;
 export type CreatedPost = Awaited<ReturnType<typeof createPost>>;
+export type User = Awaited<ReturnType<typeof getUserById>>;
+export type UpdateUserResult = Awaited<
+  ReturnType<typeof updateUsernameByUserId>
+>;
 
 export type NewPostData = Pick<Post, "title" | "body" | "tags">;
 type NewPostDataWithAuthorId = NewPostData & Pick<Post, "authorId">;
@@ -176,6 +180,28 @@ export const deletePostById = async (postId: string) => {
     },
     include: {
       likes: true,
+    },
+  });
+};
+
+export const getUserById = async (id: string) => {
+  return prismaClient.user.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+export const updateUsernameByUserId = async (
+  userId: string,
+  username: string
+) => {
+  return prismaClient.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      username,
     },
   });
 };

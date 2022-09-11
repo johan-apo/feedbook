@@ -1,6 +1,9 @@
 import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Group, Skeleton } from "@mantine/core";
 import Link from "next/link";
+import { useEffect } from "react";
+import { fetchUserById, setUser } from "../app/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import ProfileMenu from "./ProfileMenu";
 
 const UserSkeleton = () => {
@@ -33,7 +36,15 @@ const SignUpLogInButtons = () => {
 };
 
 const Header: React.FC = () => {
-  const { user, isLoading } = useUser();
+  const { user: userFromAuth0 } = useUser();
+  const dispatch = useAppDispatch();
+  const { value: user, isLoading } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    if (userFromAuth0 && userFromAuth0.sub) {
+      dispatch(fetchUserById(userFromAuth0.sub));
+    }
+  }, [userFromAuth0]);
 
   return (
     <header>
@@ -46,8 +57,9 @@ const Header: React.FC = () => {
         ) : user ? (
           <ProfileMenu
             email={user.email!}
-            nickname={user.nickname!}
+            nickname={user.username!}
             picture={user.picture!}
+            userId={user.id!}
           />
         ) : (
           <SignUpLogInButtons />

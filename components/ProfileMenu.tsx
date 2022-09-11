@@ -15,6 +15,7 @@ interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   picture: string;
   nickname: string;
   email: string;
+  userId: string;
   icon?: React.ReactNode;
 }
 
@@ -60,17 +61,20 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
   )
 );
 
-const ProfileMenu = ({ email, nickname, picture }: UserButtonProps) => {
-  const { user } = useUser();
-
+const ProfileMenu = ({ email, nickname, picture, userId }: UserButtonProps) => {
   return (
     <Group position="center" data-test="profile-button">
       <Menu withArrow>
         <Menu.Target>
-          <UserButton picture={picture} nickname={nickname} email={email} />
+          <UserButton
+            picture={picture}
+            nickname={nickname}
+            email={email}
+            userId={userId}
+          />
         </Menu.Target>
         <Menu.Dropdown>
-          <Link href={`/${user?.nickname}`}>
+          <Link href={`/${userId}`}>
             <Menu.Item icon={<User size={14} />}>Profile</Menu.Item>
           </Link>
           <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>

@@ -1,4 +1,3 @@
-import { UserProfile, useUser } from "@auth0/nextjs-auth0";
 import { Avatar, Button, Grid, Group, Text } from "@mantine/core";
 import type {
   GetServerSidePropsContext,
@@ -6,11 +5,13 @@ import type {
   PreviewData,
 } from "next";
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
-import { getPostsByUsername } from "../../prisma/queries";
+import { getPostsByUsername, User } from "../../prisma/queries";
 import FeedbackPost from "../../components/FeedbackPost";
 import type { ParsedUrlQuery } from "querystring";
+import EditModal from "../../components/Profile/EditModal";
+import { useAppSelector } from "../../app/hooks";
 
 type UserProfileData = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -20,7 +21,7 @@ interface WithData {
 
 interface LeftProps extends WithData {
   username: string | string[] | undefined;
-  user: UserProfile | undefined;
+  user: User;
 }
 
 type RightProps = WithData;
@@ -28,11 +29,12 @@ type RightProps = WithData;
 /* -------------------------------------------------------------------------- */
 /*                                   Profile                                  */
 /* -------------------------------------------------------------------------- */
-const Profile = ({ data }: UserProfileData) => {
+const ProfilePage = ({ data }: UserProfileData) => {
   const {
     query: { username },
   } = useRouter();
-  const { user } = useUser();
+  // TODO: FIGURE OUT A WAY TO MATCH THE EDIT BUTTON AND USERNAME AFTER EDITING
+  const user = useAppSelector((state) => state.user.value);
 
   const userNotFound = data == null;
 
@@ -66,10 +68,12 @@ export const getServerSideProps = async (
 /*                                    Left                                    */
 /* -------------------------------------------------------------------------- */
 const Left = ({ data, username, user }: LeftProps) => {
+  const [opened, setOpened] = useState(false);
+
   const thereIsALoggedinUser = !!user;
 
   const isCurrentUserCheckingTheirProfile =
-    thereIsALoggedinUser && user.nickname === username;
+    thereIsALoggedinUser && user.username === username;
 
   const dataExists = data!;
 
@@ -82,7 +86,10 @@ const Left = ({ data, username, user }: LeftProps) => {
             {username}
           </Text>
           {isCurrentUserCheckingTheirProfile && (
-            <Button>Edit my profile</Button>
+            <>
+              <Button onClick={() => setOpened(true)}>Edit my profile</Button>
+              <EditModal modalProps={{ opened, setOpened }} />
+            </>
           )}
         </div>
       </Group>
@@ -107,6 +114,6 @@ const Right = ({ data }: RightProps) => {
 };
 
 /* ---------------------------- Layout and export --------------------------- */
-Profile.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
+ProfilePage.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
-export default Profile;
+export default ProfilePage;

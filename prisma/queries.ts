@@ -1,4 +1,3 @@
-import axiosInstance from "../lib/axios";
 import prismaClient from "../lib/prisma";
 
 type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
@@ -8,7 +7,7 @@ type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
 export type Posts = Awaited<ReturnType<typeof getPosts>>;
 export type Post = ArrElement<Posts>;
 export type CreatedPost = Awaited<ReturnType<typeof createPost>>;
-export type User = Awaited<ReturnType<typeof getUserById>>;
+export type UserData = Awaited<ReturnType<typeof getUserById>>;
 export type UpdateUserResult = Awaited<
   ReturnType<typeof updateUsernameByUserId>
 >;
@@ -54,10 +53,10 @@ export const getPosts = async () => {
   });
 };
 
-export const getPostsByUsername = async (username: string) => {
+export const getPostsByUserId = async (userId: string) => {
   return prismaClient.user.findFirst({
     where: {
-      username,
+      id: userId,
     },
     include: {
       posts: {
@@ -202,6 +201,31 @@ export const updateUsernameByUserId = async (
     },
     data: {
       username,
+    },
+  });
+};
+
+export const updatePictureByUserId = async (
+  userId: string,
+  picture: string
+) => {
+  return prismaClient.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      picture,
+    },
+  });
+};
+
+export const getPictureByUserId = async (userId: string) => {
+  return prismaClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      picture: true,
     },
   });
 };

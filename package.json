@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.9.1",
+    "@aws-sdk/client-s3": "^3.170.0",
+    "@aws-sdk/s3-request-presigner": "^3.171.0",
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
     "@mantine/core": "^5.2.5",
@@ -22,6 +24,7 @@
     "@mantine/notifications": "^5.2.5",
     "@prisma/client": "^4.1.1",
     "@reduxjs/toolkit": "^1.8.3",
+    "@uppy/aws-s3": "^3.0.1",
     "@uppy/core": "^3.0.1",
     "@uppy/dashboard": "^3.0.1",
     "@uppy/drag-drop": "^3.0.0",
@@ -29,9 +32,11 @@
     "@uppy/progress-bar": "^3.0.0",
     "@uppy/react": "^3.0.1",
     "@uppy/webcam": "^3.1.0",
+    "@uppy/xhr-upload": "^3.0.1",
     "axios": "^0.27.2",
     "dayjs": "^1.11.4",
     "express-jwt": "^7.7.5",
+    "formidable": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.1.4",
     "next": "^12.2.5",
@@ -43,6 +48,7 @@
     "tabler-icons-react": "^1.51.0"
   },
   "devDependencies": {
+    "@types/formidable": "^2.0.5",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",

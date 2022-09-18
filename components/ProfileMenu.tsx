@@ -22,7 +22,14 @@ interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
 // eslint-disable-next-line react/display-name
 const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
   (
-    { picture: image, nickname: name, email, icon, ...others }: UserButtonProps,
+    {
+      picture: image,
+      nickname: name,
+      email,
+      icon,
+      userId,
+      ...others
+    }: UserButtonProps,
     ref
   ) => (
     <UnstyledButton
@@ -44,7 +51,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
       {...others}
     >
       <Group>
-        <Avatar src={image} radius="xl" />
+        <Avatar src={image} radius="xs" />
         <div style={{ flex: 1 }}>
           <Text size="sm" weight={500}>
             {name}

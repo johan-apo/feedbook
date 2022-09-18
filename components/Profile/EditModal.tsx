@@ -1,18 +1,20 @@
 import { useEffect, useMemo } from "react";
 import { Button, Divider, Group, Modal, TextInput } from "@mantine/core";
-
-/* ---------------------------------- Uppy ---------------------------------- */
-import Uppy from "@uppy/core";
-import { Dashboard } from "@uppy/react";
-import "@uppy/core/dist/style.css";
-import "@uppy/dashboard/dist/style.css";
-import "@uppy/webcam/dist/style.css";
-import Webcam from "@uppy/webcam";
 import { useForm } from "@mantine/form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import axiosInstance from "../../lib/axios";
 import { setUser } from "../../app/features/user/userSlice";
 import { UpdateUserResult } from "../../prisma/queries";
+import { showNotification } from "@mantine/notifications";
+
+/* ---------------------------------- Uppy ---------------------------------- */
+import Uppy from "@uppy/core";
+import { Dashboard } from "@uppy/react";
+import Webcam from "@uppy/webcam";
+import AwsS3 from "@uppy/aws-s3";
+import "@uppy/core/dist/style.css";
+import "@uppy/dashboard/dist/style.css";
+import "@uppy/webcam/dist/style.css";
 
 interface EditModal {
   modalProps: {
@@ -23,11 +25,70 @@ interface EditModal {
 
 const EditModal = ({ modalProps: { opened, setOpened } }: EditModal) => {
   const user = useAppSelector((state) => state.user.value);
+
   const uppy = useMemo(() => {
-    return new Uppy().use(Webcam, {
-      modes: ["picture"],
-    });
-  }, []);
+    return new Uppy({
+      restrictions: {
+        maxNumberOfFiles: 1,
+        allowedFileTypes: [".jpg", ".jpeg", ".png"],
+      },
+      onBeforeFileAdded(currentFile) {
+        const name = `${user?.username}__${Date.now()}.${
+          currentFile.extension
+        }`;
+        const modifiedFile = {
+          ...currentFile,
+          meta: {
+            ...currentFile.meta,
+            name,
+          },
+          name,
+        };
+
+        return modifiedFile;
+      },
+    })
+      .use(Webcam, {
+        modes: ["picture"],
+      })
+      .use(AwsS3, {
+        getUploadParameters(file) {
+          return axiosInstance
+            .put("/users/sign-url-s3", {
+              filename: file.name,
+            })
+            .then(({ data: { signedUrl } }) => {
+              return {
+                method: "PUT",
+                url: signedUrl,
+                fields: [],
+                headers: {
+                  "Content-Type": file.type,
+                },
+              };
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        },
+      })
+      .on("upload-success", async (_file, response) => {
+        const { data } = await axiosInstance.patch(
+          `/users/${user?.id}/picture`,
+          {
+            picture: response.uploadURL,
+          }
+        );
+
+        dispatch(setUser(data));
+
+        showNotification({
+          color: "green",
+          message: "Your profile picture has been updated",
+        });
+      });
+  }, [user?.username]);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -48,6 +109,10 @@ const EditModal = ({ modalProps: { opened, setOpened } }: EditModal) => {
       );
       dispatch(setUser(data));
       setOpened(false);
+      showNotification({
+        color: "green",
+        message: "Changes saved",
+      });
     }
   };
 

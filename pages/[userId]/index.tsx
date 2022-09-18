@@ -4,48 +4,32 @@ import type {
   InferGetServerSidePropsType,
   PreviewData,
 } from "next";
-import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
-import { getPostsByUsername, User } from "../../prisma/queries";
+import { getPostsByUserId, UserData } from "../../prisma/queries";
 import FeedbackPost from "../../components/FeedbackPost";
 import type { ParsedUrlQuery } from "querystring";
 import EditModal from "../../components/Profile/EditModal";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
-type UserProfileData = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-interface WithData {
-  data: UserProfileData["data"];
-}
-
-interface LeftProps extends WithData {
-  username: string | string[] | undefined;
-  user: User;
-}
-
-type RightProps = WithData;
+type ProfilePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 /* -------------------------------------------------------------------------- */
 /*                                   Profile                                  */
 /* -------------------------------------------------------------------------- */
-const ProfilePage = ({ data }: UserProfileData) => {
-  const {
-    query: { username },
-  } = useRouter();
-  // TODO: FIGURE OUT A WAY TO MATCH THE EDIT BUTTON AND USERNAME AFTER EDITING
-  const user = useAppSelector((state) => state.user.value);
-
-  const userNotFound = data == null;
+const ProfilePage = ({ userDataAndPosts }: ProfilePageProps) => {
+  const userNotFound = userDataAndPosts == null;
 
   if (userNotFound) {
     return <Text>User not found</Text>;
   }
 
+  const { posts, createdAt, updatedAt, ...userData } = userDataAndPosts;
+
   return (
     <Grid>
-      <Left data={data} user={user} username={username} />
-      <Right data={data} />
+      <Left userData={userData} />
+      <Right posts={posts} />
     </Grid>
   );
 };
@@ -53,37 +37,43 @@ const ProfilePage = ({ data }: UserProfileData) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
 ) => {
-  const username = context.query.username;
+  const userId = context.query.userId;
 
   const isUsernameAnArrayOrUndefined =
-    username == undefined || typeof username !== "string";
+    userId == undefined || typeof userId !== "string";
 
   if (isUsernameAnArrayOrUndefined) return { props: {} };
 
-  const data = await getPostsByUsername(username);
-  return { props: { data } };
+  const userDataAndPosts = await getPostsByUserId(userId);
+  return { props: { userDataAndPosts } };
 };
 
 /* -------------------------------------------------------------------------- */
 /*                                    Left                                    */
 /* -------------------------------------------------------------------------- */
-const Left = ({ data, username, user }: LeftProps) => {
+const Left = ({ userData: { id, picture, username } }: any) => {
   const [opened, setOpened] = useState(false);
+  const loggedinUser = useAppSelector((state) => state.user.value);
 
-  const thereIsALoggedinUser = !!user;
+  const thereIsALoggedinUser = !!loggedinUser;
 
   const isCurrentUserCheckingTheirProfile =
-    thereIsALoggedinUser && user.username === username;
-
-  const dataExists = data!;
+    thereIsALoggedinUser && loggedinUser.id === id;
 
   return (
     <Grid.Col md={12} lg={4}>
       <Group align="center">
-        <Avatar src={dataExists.picture} size="xl" />
+        <Avatar
+          src={
+            isCurrentUserCheckingTheirProfile ? loggedinUser.picture : picture
+          }
+          size="xl"
+        />
         <div>
           <Text size="xl" weight="bold">
-            {username}
+            {isCurrentUserCheckingTheirProfile
+              ? loggedinUser.username
+              : username}
           </Text>
           {isCurrentUserCheckingTheirProfile && (
             <>
@@ -100,13 +90,11 @@ const Left = ({ data, username, user }: LeftProps) => {
 /* -------------------------------------------------------------------------- */
 /*                                    Right                                   */
 /* -------------------------------------------------------------------------- */
-const Right = ({ data }: RightProps) => {
-  const dataExists = data!;
-
+const Right = ({ posts }: any) => {
   return (
     <Grid.Col md={12} lg={8}>
       <Text>Your feedbacks:</Text>
-      {dataExists.posts.map((post) => {
+      {posts.map((post) => {
         return <FeedbackPost key={post.id} data={post} />;
       })}
     </Grid.Col>

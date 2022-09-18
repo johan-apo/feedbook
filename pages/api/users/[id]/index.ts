@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUserById, updateUsernameByUserId } from "../../../prisma/queries";
+import {
+  getUserById,
+  updateUsernameByUserId,
+} from "../../../../prisma/queries";
 
 export default async function handler(
   req: NextApiRequest,

@@ -144,9 +144,10 @@ const FeedbackPost = ({
       </Grid>
       <Group position={withAuthor ? "apart" : "right"} mt="xs">
         {withAuthor && (
+          // TODO: REFACTOR AND CHANGE EVERY INSTANCE OF REDUX AND AUTH0
           <Text size="sm">
             By:{" "}
-            <Link href={`/${username}`}>
+            <Link href={`/${authorId}`}>
               <Anchor>
                 {user && user.nickname === username ? "Me" : username}
               </Anchor>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { addPost } from "../app/features/posts/postsSlice";
 import { useAppDispatch } from "../app/hooks";
 import type { NewPostData } from "../prisma/queries";
-import { createPostRequest } from "../prisma/request";
+import { createPostRequest } from "../prisma/requests";
 
 export default function AddPostModal({ opened, setOpened }: any) {
   const dispatch = useAppDispatch();

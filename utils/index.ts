@@ -18,4 +18,11 @@ const getUserIdFromAuth0 = (session: Session) =>
  */
 const getHexadecimalId = (auth0Id: string) => auth0Id.split("|")[1];
 
-export { getUserIdFromAuth0, getHexadecimalId };
+function hasOwnProperty<X extends {}, Y extends PropertyKey>(
+  obj: X,
+  prop: Y
+): obj is X & Record<Y, unknown> {
+  return obj.hasOwnProperty(prop);
+}
+
+export { getUserIdFromAuth0, getHexadecimalId, hasOwnProperty };

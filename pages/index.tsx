@@ -1,17 +1,17 @@
 import { Grid } from "@mantine/core";
+import { InferGetServerSidePropsType } from "next";
 import { ReactElement } from "react";
 import { setPosts } from "../app/features/posts/postsSlice";
 import { useAppDispatch } from "../app/hooks";
 import LeftPanel from "../components/Home/Left";
 import RightPanel from "../components/Home/Right";
 import Layout from "../components/Layout";
-import { Posts, getPosts } from "../prisma/queries";
+import { getPosts } from "../prisma/queries";
 
-type HomeProps = { feed: Posts };
-
-const Home = ({ feed }: HomeProps) => {
+const Home = ({
+  feed,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const dispatch = useAppDispatch();
-
   dispatch(setPosts(feed));
 
   return (

@@ -6,11 +6,11 @@ import type {
 } from "next";
 import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
-import { getPostsByUserId, UserData } from "../../prisma/queries";
+import { getPostsByUserId } from "../../prisma/queries";
 import FeedbackPost from "../../components/FeedbackPost";
 import type { ParsedUrlQuery } from "querystring";
 import EditModal from "../../components/Profile/EditModal";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 
 type ProfilePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 

@@ -1,6 +1,24 @@
 import axiosInstance from "../lib/axios";
-import { CreatedPost, NewPostData } from "./queries";
+import {
+  CreatePostRESULT,
+  DeletePostRESULT,
+  LikeOrDislikePostRESULT,
+  NewPostData,
+} from "./queries";
 
-export const createPostRequest = async (data: NewPostData) => {
-  return (await axiosInstance.post<CreatedPost>("/posts", data)).data;
+export const createPostREQUEST = async (formValues: NewPostData) => {
+  return (await axiosInstance.post<CreatePostRESULT>("/posts", formValues))
+    .data;
 };
+
+export const updatePostByIdREQUEST = async (postId: string) => {
+  return (
+    await axiosInstance.patch<LikeOrDislikePostRESULT>(`/posts/${postId}`)
+  ).data;
+};
+
+export const deletePostByIdREQUEST = async (postId: string) => {
+  return (await axiosInstance.delete<DeletePostRESULT>(`/posts/${postId}`)).data
+    .id;
+};
+// TODO: ADD USER REQUESTS

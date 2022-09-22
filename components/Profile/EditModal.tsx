@@ -3,8 +3,12 @@ import { Button, Divider, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import axiosInstance from "../../lib/axios";
-import { setUser } from "../../app/features/user/userSlice";
-import { UpdateUserResult } from "../../prisma/queries";
+import {
+  setUser,
+  updateUsernameById,
+  updateUserPictureById,
+} from "../../app/features/user/userSlice";
+import { UpdateUsernameRESULT } from "../../prisma/queries";
 import { showNotification } from "@mantine/notifications";
 
 /* ---------------------------------- Uppy ---------------------------------- */
@@ -72,20 +76,15 @@ const EditModal = ({ modalProps: { opened, setOpened } }: EditModal) => {
             });
         },
       })
-      .on("upload-success", async (_file, response) => {
-        const { data } = await axiosInstance.patch(
-          `/users/${user?.id}/picture`,
-          {
-            picture: response.uploadURL,
-          }
-        );
+      .on("upload-success", async (_file, { uploadURL }) => {
+        if (uploadURL && user?.id) {
+          dispatch(updateUserPictureById({ uploadURL, userId: user.id }));
 
-        dispatch(setUser(data));
-
-        showNotification({
-          color: "green",
-          message: "Your profile picture has been updated",
-        });
+          showNotification({
+            color: "green",
+            message: "Your profile picture has been updated",
+          });
+        }
       });
   }, [user?.username]);
 
@@ -102,13 +101,9 @@ const EditModal = ({ modalProps: { opened, setOpened } }: EditModal) => {
   });
 
   const handleSubmit = async ({ username }: typeof form.values) => {
-    if (user) {
-      const { data } = await axiosInstance.patch<UpdateUserResult>(
-        `/users/${user.id}`,
-        { username }
-      );
-      dispatch(setUser(data));
-      setOpened(false);
+    if (user && username) {
+      dispatch(updateUsernameById({ userId: user.id, username }));
+
       showNotification({
         color: "green",
         message: "Changes saved",

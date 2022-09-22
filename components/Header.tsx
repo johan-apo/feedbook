@@ -1,9 +1,9 @@
 import { useUser } from "@auth0/nextjs-auth0";
-import { Button, Group, Skeleton, Text, ThemeIcon } from "@mantine/core";
+import { Button, Group, Skeleton, Text } from "@mantine/core";
 import Link from "next/link";
 import { useEffect } from "react";
 import { News } from "tabler-icons-react";
-import { fetchUserById, setUser } from "../app/features/user/userSlice";
+import { fetchUserById, setLoadingFalse } from "../app/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import ProfileMenu from "./ProfileMenu";
 
@@ -36,18 +36,22 @@ const SignUpLogInButtons = () => {
   );
 };
 
-const Header: React.FC = () => {
-  const { user: userFromAuth0 } = useUser();
+const Header = () => {
+  const { user: userFromAuth0, isLoading: isLoadingFromAuth0 } = useUser();
   const dispatch = useAppDispatch();
   const { value: user, isLoading } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(fetchUserById(userFromAuth0?.sub || null));
-  }, [userFromAuth0]);
+    if (userFromAuth0 && userFromAuth0.sub) {
+      dispatch(fetchUserById(userFromAuth0.sub));
+    } else {
+      dispatch(setLoadingFalse());
+    }
+  }, [isLoadingFromAuth0]);
 
   return (
     <header>
-      <Group position="apart">
+      <Group py="md" position="apart">
         <Link href="/">
           <Group spacing="xs">
             <News />

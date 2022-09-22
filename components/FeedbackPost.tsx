@@ -1,4 +1,3 @@
-import { useUser } from "@auth0/nextjs-auth0";
 import {
   ActionIcon,
   Anchor,
@@ -6,21 +5,24 @@ import {
   Grid,
   Group,
   Menu,
-  Paper,
   Text,
 } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Link from "next/link";
 import { ArrowBigTop, Dots } from "tabler-icons-react";
-import { removePost, updatePost } from "../app/features/posts/postsSlice";
-import { useAppDispatch } from "../app/hooks";
-import axiosInstance from "../lib/axios";
+import {
+  deletePostByIdTHUNK,
+  updatePostByIdTHUNK,
+} from "../app/features/posts/postsSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import type { Post } from "../prisma/queries";
-import { getHexadecimalId } from "../utils";
+
+import PaperContainer from "./common/PaperContainer";
 
 dayjs.extend(relativeTime);
+
+const getTimeElapsedFromDate = (createdAt: Date) => dayjs(createdAt).fromNow();
 
 type FeedbackPostProps = {
   data: Post;
@@ -28,10 +30,10 @@ type FeedbackPostProps = {
 };
 
 const PostOptions = ({
-  handleDelete,
+  onHandleDeleteClick,
   postId,
 }: {
-  handleDelete: (postId: string) => void;
+  onHandleDeleteClick: (postId: string) => void;
   postId: string;
 }) => (
   <Menu>
@@ -41,7 +43,7 @@ const PostOptions = ({
       </ActionIcon>
     </Menu.Target>
     <Menu.Dropdown>
-      <Menu.Item color="red" onClick={() => void handleDelete(postId)}>
+      <Menu.Item color="red" onClick={() => onHandleDeleteClick(postId)}>
         Delete
       </Menu.Item>
     </Menu.Dropdown>
@@ -57,56 +59,32 @@ const FeedbackPost = ({
     body,
     tags,
     createdAt,
-    author: { username },
+    author: { username: authorOfPost },
   },
   withAuthor,
 }: FeedbackPostProps) => {
-  const { user } = useUser();
+  const currentLoggedInUser = useAppSelector((state) => state.user.value);
   const dispatch = useAppDispatch();
 
-  let currentUserId: string | undefined;
-  if (user) {
-    currentUserId = getHexadecimalId(user.sub!);
-  }
-
-  const handleLikeButton = async () => {
-    try {
-      const { data: interactedPost } = await axiosInstance.patch(
-        `/posts/${id}`
-      );
-      dispatch(updatePost(interactedPost));
-    } catch (error: any) {
-      if (error.response.data.error == "not_authenticated") {
-        showNotification({
-          message: "Log in first to interact",
-          color: "orange",
-        });
-      }
-    }
+  const handleLikeButton = () => {
+    dispatch(updatePostByIdTHUNK(id));
   };
 
-  const handleDelete = async (postId: string) => {
-    try {
-      await axiosInstance.delete(`/posts/${postId}`);
-      dispatch(removePost(postId));
-    } catch (error) {
-      console.error(error);
-      showNotification({
-        message: "Something went wrong",
-        color: "red",
-      });
-    }
+  const handleDelete = (postId: string) => {
+    dispatch(deletePostByIdTHUNK(postId));
   };
+
+  const authorIsTheCurrentLoggedInUser = authorId === currentLoggedInUser?.id;
+
+  const isPostLikedByCurrentLoggedInUser = likes.some((like) => {
+    if (currentLoggedInUser) return like.authorId === currentLoggedInUser.id;
+  });
 
   return (
-    <Paper
-      mb="xs"
-      sx={(theme) => ({ backgroundColor: theme.colors.dark[6] })}
-      p="xs"
-    >
-      {authorId === currentUserId && (
+    <PaperContainer mb="sm">
+      {authorIsTheCurrentLoggedInUser && (
         <Group position="right">
-          <PostOptions handleDelete={handleDelete} postId={id} />
+          <PostOptions onHandleDeleteClick={handleDelete} postId={id} />
         </Group>
       )}
       <Grid gutter="xl" align="center">
@@ -116,13 +94,7 @@ const FeedbackPost = ({
               onClick={handleLikeButton}
               color="blue"
               variant={
-                likes.some((like) => {
-                  if (user) {
-                    return like.authorId === currentUserId;
-                  }
-                })
-                  ? "filled"
-                  : "transparent"
+                isPostLikedByCurrentLoggedInUser ? "filled" : "transparent"
               }
             >
               <ArrowBigTop size="16" />
@@ -144,19 +116,21 @@ const FeedbackPost = ({
       </Grid>
       <Group position={withAuthor ? "apart" : "right"} mt="xs">
         {withAuthor && (
-          // TODO: REFACTOR AND CHANGE EVERY INSTANCE OF REDUX AND AUTH0
           <Text size="sm">
             By:{" "}
             <Link href={`/${authorId}`}>
               <Anchor>
-                {user && user.nickname === username ? "Me" : username}
+                {currentLoggedInUser &&
+                currentLoggedInUser.username === authorOfPost
+                  ? "Me"
+                  : authorOfPost}
               </Anchor>
             </Link>
           </Text>
         )}
-        <Text size="sm">{dayjs(createdAt).fromNow()}</Text>
+        <Text size="sm">{getTimeElapsedFromDate(createdAt)}</Text>
       </Group>
-    </Paper>
+    </PaperContainer>
   );
 };
 

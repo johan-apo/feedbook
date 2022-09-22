@@ -4,12 +4,19 @@ type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
   ? ElementType
   : never;
 
-export type Posts = Awaited<ReturnType<typeof getPosts>>;
-export type Post = ArrElement<Posts>;
-export type CreatedPost = Awaited<ReturnType<typeof createPost>>;
-export type UserData = Awaited<ReturnType<typeof getUserById>>;
-export type UpdateUserResult = Awaited<
+export type GetPostsRESULT = Awaited<ReturnType<typeof getPosts>>;
+export type Post = ArrElement<GetPostsRESULT>;
+export type CreatePostRESULT = Awaited<ReturnType<typeof createPost>>;
+export type getUserByIdRESULT = Awaited<ReturnType<typeof getUserById>>;
+export type LikeOrDislikePostRESULT = Awaited<
+  ReturnType<typeof likeOrDislikePost>
+>;
+export type DeletePostRESULT = Awaited<ReturnType<typeof deletePostById>>;
+export type UpdateUsernameRESULT = Awaited<
   ReturnType<typeof updateUsernameByUserId>
+>;
+export type UpdateUserProfileRESULT = Awaited<
+  ReturnType<typeof updateUserPictureByUserId>
 >;
 
 export type NewPostData = Pick<Post, "title" | "body" | "tags">;
@@ -205,7 +212,7 @@ export const updateUsernameByUserId = async (
   });
 };
 
-export const updatePictureByUserId = async (
+export const updateUserPictureByUserId = async (
   userId: string,
   picture: string
 ) => {

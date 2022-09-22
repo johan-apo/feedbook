@@ -1,11 +1,9 @@
 import { Button, Group, Modal, MultiSelect, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { showNotification } from "@mantine/notifications";
 import { useState } from "react";
-import { addPost } from "../app/features/posts/postsSlice";
+import { addPostTHUNK } from "../app/features/posts/postsSlice";
 import { useAppDispatch } from "../app/hooks";
 import type { NewPostData } from "../prisma/queries";
-import { createPostRequest } from "../prisma/requests";
 
 export default function AddPostModal({ opened, setOpened }: any) {
   const dispatch = useAppDispatch();
@@ -25,17 +23,8 @@ export default function AddPostModal({ opened, setOpened }: any) {
   ]);
 
   async function handleSubmit(formData: typeof form.values) {
-    try {
-      const createdPost = await createPostRequest(formData);
-      form.reset();
-      dispatch(addPost(createdPost));
-      setOpened(false);
-    } catch (error: any) {
-      showNotification({
-        message: error.response.data.description,
-        color: "red",
-      });
-    }
+    dispatch(addPostTHUNK(formData));
+    setOpened(false);
   }
 
   return (

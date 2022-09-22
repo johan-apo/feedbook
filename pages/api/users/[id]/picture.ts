@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { AWSS3Client } from "../../../../lib/awsS3";
 import {
   getPictureByUserId,
-  updatePictureByUserId,
+  updateUserPictureByUserId,
 } from "../../../../prisma/queries";
 
 export default async function handler(
@@ -42,7 +42,7 @@ export default async function handler(
           AWSS3Client.deleteProfilePictureByFilename(pictureFilename);
         }
 
-        const result = await updatePictureByUserId(userId, picture);
+        const result = await updateUserPictureByUserId(userId, picture);
         res.status(200).json(result);
       } catch (error) {
         res.status(500).json(error);

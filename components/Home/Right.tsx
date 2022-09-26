@@ -9,10 +9,10 @@ import FeedbackPost from "../FeedbackPost";
 
 const RightPanel = () => {
   const posts = useAppSelector(selectPosts);
-  const { isLoading, value: user } = useAppSelector((state) => state.user);
+  const { isLoading, value: currentLoggedInUser } = useAppSelector((state) => state.user);
   const [opened, setOpened] = useState(false);
 
-  const userIsLoggedIn = user != null;
+  const userIsLoggedIn = currentLoggedInUser != null;
 
   return (
     <>

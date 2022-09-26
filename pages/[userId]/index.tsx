@@ -6,11 +6,12 @@ import type {
 } from "next";
 import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
-import { getPostsByUserId } from "../../prisma/queries";
+import { getPostsByUserId, Post } from "../../prisma/queries";
 import FeedbackPost from "../../components/FeedbackPost";
 import type { ParsedUrlQuery } from "querystring";
 import EditModal from "../../components/Profile/EditModal";
 import { useAppSelector } from "../../app/hooks";
+import type { Like, User } from "@prisma/client";
 
 type ProfilePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -28,8 +29,8 @@ const ProfilePage = ({ userDataAndPosts }: ProfilePageProps) => {
 
   return (
     <Grid>
-      <Left userData={userData} />
-      <Right posts={posts} />
+      <ProfileInfo userData={userData} />
+      <ProfilePosts posts={posts} />
     </Grid>
   );
 };
@@ -49,33 +50,46 @@ export const getServerSideProps = async (
 };
 
 /* -------------------------------------------------------------------------- */
-/*                                    Left                                    */
+/*                                 ProfileInfo                                */
 /* -------------------------------------------------------------------------- */
-const Left = ({ userData: { id, picture, username } }: any) => {
+type ProfileInforProps = {
+  userData: {
+    id: string;
+    email: string;
+    username: string;
+    picture: string | null;
+  };
+};
+
+const ProfileInfo = ({
+  userData: { id, picture, username },
+}: ProfileInforProps) => {
   const [opened, setOpened] = useState(false);
-  const loggedinUser = useAppSelector((state) => state.user.value);
+  const currentLoggedInUser = useAppSelector((state) => state.user.value);
 
-  const thereIsALoggedinUser = !!loggedinUser;
+  const thereIsALoggedinUser = !!currentLoggedInUser;
 
-  const isCurrentUserCheckingTheirProfile =
-    thereIsALoggedinUser && loggedinUser.id === id;
+  const isCurrentLoggedInUserCheckingTheirProfile =
+    thereIsALoggedinUser && currentLoggedInUser.id === id;
 
   return (
     <Grid.Col md={12} lg={4}>
       <Group align="center">
         <Avatar
           src={
-            isCurrentUserCheckingTheirProfile ? loggedinUser.picture : picture
+            isCurrentLoggedInUserCheckingTheirProfile
+              ? currentLoggedInUser.picture
+              : picture
           }
           size="xl"
         />
         <div>
           <Text size="xl" weight="bold">
-            {isCurrentUserCheckingTheirProfile
-              ? loggedinUser.username
+            {isCurrentLoggedInUserCheckingTheirProfile
+              ? currentLoggedInUser.username
               : username}
           </Text>
-          {isCurrentUserCheckingTheirProfile && (
+          {isCurrentLoggedInUserCheckingTheirProfile && (
             <>
               <Button onClick={() => setOpened(true)}>Edit my profile</Button>
               <EditModal modalProps={{ opened, setOpened }} />
@@ -88,9 +102,16 @@ const Left = ({ userData: { id, picture, username } }: any) => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*                                    Right                                   */
+/*                                ProfilePosts                                */
 /* -------------------------------------------------------------------------- */
-const Right = ({ posts }: any) => {
+const ProfilePosts = ({
+  posts,
+}: {
+  posts: (Post & {
+    likes: Like[];
+    author: User;
+  })[];
+}) => {
   return (
     <Grid.Col md={12} lg={8}>
       <Text>Your feedbacks:</Text>

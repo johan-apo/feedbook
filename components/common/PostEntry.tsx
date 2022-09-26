@@ -11,7 +11,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import type { Post } from "../../prisma/queries";
 import PaperContainer from "./PaperContainer";
-import { ArrowBigTop, Dots } from "tabler-icons-react";
+import { ArrowBigTop, Dots, Share, Trash } from "tabler-icons-react";
 import {
   deletePostByIdTHUNK,
   updatePostByIdTHUNK,
@@ -87,7 +87,14 @@ const OptionsFlyout = ({ postId }: { postId: string }) => {
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item color="red" onClick={handleDelete}>
+          <Menu.Item icon={<Share size={16} />} onClick={handleDelete}>
+            Share
+          </Menu.Item>
+          <Menu.Item
+            color="red"
+            icon={<Trash size={16} />}
+            onClick={handleDelete}
+          >
             Delete
           </Menu.Item>
         </Menu.Dropdown>

@@ -8,7 +8,7 @@ import type {
 import { getHexadecimalId } from "../../../utils";
 import { RootState } from "../../store";
 
-export const fetchUserById = createAsyncThunk(
+export const fetchUserByIdTHUNK = createAsyncThunk(
   "user/fetchById",
   async (userIdFromHook: string) => {
     const hexadecimalId = getHexadecimalId(userIdFromHook);
@@ -19,7 +19,7 @@ export const fetchUserById = createAsyncThunk(
   }
 );
 
-export const updateUserPictureById = createAsyncThunk(
+export const updateUserPictureByIdTHUNK = createAsyncThunk(
   "user/updateUserPictureById",
   async ({ userId, uploadURL }: { userId: string; uploadURL: string }) => {
     const { data } = await axiosInstance.patch<UpdateUserProfileRESULT>(
@@ -32,7 +32,7 @@ export const updateUserPictureById = createAsyncThunk(
   }
 );
 
-export const updateUsernameById = createAsyncThunk(
+export const updateUsernameByIdTHUNK = createAsyncThunk(
   "user/updateUsernameById",
   async ({ userId, username }: { userId: string; username: string }) => {
     const { data } = await axiosInstance.patch<UpdateUsernameRESULT>(
@@ -61,20 +61,20 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserById.pending, (state) => {
+      .addCase(fetchUserByIdTHUNK.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(
-        fetchUserById.fulfilled,
+        fetchUserByIdTHUNK.fulfilled,
         (state, action: PayloadAction<getUserByIdRESULT>) => {
           state.value = action.payload;
           state.isLoading = false;
         }
       )
-      .addCase(updateUserPictureById.fulfilled, (state, action) => {
+      .addCase(updateUserPictureByIdTHUNK.fulfilled, (state, action) => {
         state.value = action.payload;
       })
-      .addCase(updateUsernameById.fulfilled, (state, action) => {
+      .addCase(updateUsernameByIdTHUNK.fulfilled, (state, action) => {
         state.value = action.payload;
       });
   },

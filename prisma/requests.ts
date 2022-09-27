@@ -22,3 +22,10 @@ export const deletePostByIdREQUEST = async (postId: string) => {
     .id;
 };
 // TODO: ADD USER REQUESTS
+export const createSignedS3UrlREQUEST = async (filename: string) => {
+  return (
+    await axiosInstance.put<{ signedUrl: string }>("users/sign-url-s3", {
+      filename,
+    })
+  ).data;
+};

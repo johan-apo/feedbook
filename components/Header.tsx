@@ -3,7 +3,7 @@ import { Button, Group, Skeleton, Text } from "@mantine/core";
 import Link from "next/link";
 import { useEffect } from "react";
 import { News } from "tabler-icons-react";
-import { fetchUserById, setLoadingFalse } from "../app/features/user/userSlice";
+import { fetchUserByIdTHUNK, setLoadingFalse } from "../app/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import ProfileMenu from "./ProfileMenu";
 
@@ -43,7 +43,7 @@ const Header = () => {
 
   useEffect(() => {
     if (userFromAuth0 && userFromAuth0.sub) {
-      dispatch(fetchUserById(userFromAuth0.sub));
+      dispatch(fetchUserByIdTHUNK(userFromAuth0.sub));
     } else {
       dispatch(setLoadingFalse());
     }

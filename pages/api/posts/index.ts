@@ -1,8 +1,4 @@
-import {
-  getAccessToken,
-  getSession,
-  withApiAuthRequired,
-} from "@auth0/nextjs-auth0";
+import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createPost } from "../../../prisma/queries";
 import { getUserIdFromAuth0 } from "../../../utils";

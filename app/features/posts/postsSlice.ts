@@ -1,37 +1,12 @@
-import { showNotification } from "@mantine/notifications";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 import type { GetPostsRESULT, NewPostData } from "../../../prisma/queries";
 import {
   createPostREQUEST,
   deletePostByIdREQUEST,
   updatePostByIdREQUEST,
 } from "../../../prisma/requests";
-import { hasOwnProperty } from "../../../utils";
+import { showNotificationOnError } from "../../../utils";
 import { RootState } from "../../store";
-
-const showNotificationOnError = (error: unknown) => {
-  if (axios.isAxiosError(error)) {
-    const responseData = error.response?.data;
-    showNotification({
-      color: "red",
-      title: error.message,
-      message:
-        responseData &&
-        hasOwnProperty(responseData, "description") &&
-        typeof responseData.description === "string"
-          ? responseData.description
-          : "Something went wrong, try later",
-    });
-  } else {
-    if (error instanceof Error) {
-      showNotification({
-        color: "red",
-        message: "error.message",
-      });
-    }
-  }
-};
 
 export const addPostTHUNK = createAsyncThunk(
   "posts/addPost",

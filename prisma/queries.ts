@@ -7,7 +7,7 @@ type ArrElement<ArrType> = ArrType extends readonly (infer ElementType)[]
 export type GetPostsRESULT = Awaited<ReturnType<typeof getPosts>>;
 export type Post = ArrElement<GetPostsRESULT>;
 export type CreatePostRESULT = Awaited<ReturnType<typeof createPost>>;
-export type getUserByIdRESULT = Awaited<ReturnType<typeof getUserById>>;
+export type GetUserByIdRESULT = Awaited<ReturnType<typeof getUserById>>;
 export type LikeOrDislikePostRESULT = Awaited<
   ReturnType<typeof likeOrDislikePost>
 >;

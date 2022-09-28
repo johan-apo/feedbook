@@ -3,7 +3,10 @@ import { Button, Group, Skeleton, Text } from "@mantine/core";
 import Link from "next/link";
 import { useEffect } from "react";
 import { News } from "tabler-icons-react";
-import { fetchUserByIdTHUNK, setLoadingFalse } from "../app/features/user/userSlice";
+import {
+  fetchUserByIdTHUNK,
+  setLoadingFalse,
+} from "../app/features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import ProfileMenu from "./ProfileMenu";
 
@@ -42,6 +45,7 @@ const Header = () => {
   const { value: user, isLoading } = useAppSelector((state) => state.user);
 
   useEffect(() => {
+    console.log("Fired!");
     if (userFromAuth0 && userFromAuth0.sub) {
       dispatch(fetchUserByIdTHUNK(userFromAuth0.sub));
     } else {

@@ -18,7 +18,6 @@ const Layout = ({ children }: LayoutProps) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log("Fired!");
     if (user && user.sub) {
       dispatch(fetchUserByIdTHUNK(user.sub));
     } else {

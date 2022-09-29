@@ -10,6 +10,7 @@ export const showNotificationOnError = (error: unknown) => {
       title: error.message,
       message:
         responseData &&
+        responseData instanceof Object &&
         hasOwnProperty(responseData, "description") &&
         typeof responseData.description === "string"
           ? responseData.description

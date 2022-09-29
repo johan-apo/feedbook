@@ -1,13 +1,7 @@
-import { useUser } from "@auth0/nextjs-auth0";
 import { Button, Group, Skeleton, Text } from "@mantine/core";
 import Link from "next/link";
-import { useEffect } from "react";
 import { News } from "tabler-icons-react";
-import {
-  fetchUserByIdTHUNK,
-  setLoadingFalse,
-} from "../app/features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { useAppSelector } from "../app/hooks";
 import ProfileMenu from "./ProfileMenu";
 
 const UserSkeleton = () => {
@@ -40,18 +34,9 @@ const SignUpLogInButtons = () => {
 };
 
 const Header = () => {
-  const { user: userFromAuth0, isLoading: isLoadingFromAuth0 } = useUser();
-  const dispatch = useAppDispatch();
-  const { value: user, isLoading } = useAppSelector((state) => state.user);
-
-  useEffect(() => {
-    console.log("Fired!");
-    if (userFromAuth0 && userFromAuth0.sub) {
-      dispatch(fetchUserByIdTHUNK(userFromAuth0.sub));
-    } else {
-      dispatch(setLoadingFalse());
-    }
-  }, [isLoadingFromAuth0]);
+  const { value: currentLoggedInUser, isLoading } = useAppSelector(
+    (state) => state.user
+  );
 
   return (
     <header>
@@ -66,12 +51,12 @@ const Header = () => {
         </Link>
         {isLoading ? (
           <UserSkeleton />
-        ) : user ? (
+        ) : currentLoggedInUser ? (
           <ProfileMenu
-            email={user.email!}
-            nickname={user.username!}
-            picture={user.picture!}
-            userId={user.id!}
+            email={currentLoggedInUser.email}
+            nickname={currentLoggedInUser.username}
+            picture={currentLoggedInUser.picture}
+            userId={currentLoggedInUser.id}
           />
         ) : (
           <SignUpLogInButtons />

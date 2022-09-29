@@ -9,10 +9,9 @@ import {
   Divider,
 } from "@mantine/core";
 import Link from "next/link";
-import { useUser } from "@auth0/nextjs-auth0";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-  picture: string;
+  picture: string | null;
   nickname: string;
   email: string;
   userId: string;

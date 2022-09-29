@@ -4530,14 +4530,14 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-next-superjson-plugin@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/next-superjson-plugin/-/next-superjson-plugin-0.3.0.tgz#81145f275c1e555be68867c104cc21113f96c675"
-  integrity sha512-M0Soj1P2t9peCyzNndEJiS48O2m88X9UGsCXDy8WHyGwWw1S7eCOEg9MiMqR+X1GD5C3hsdtHKMsKqrZOzr+SQ==
+next-superjson-plugin@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/next-superjson-plugin/-/next-superjson-plugin-0.4.2.tgz#5c5798a707be8fde627176385f60942f42a3f1bd"
+  integrity sha512-ueqwt2J6yB578PQ8vS8Ns+zeZ7lX+EGtaw/3i4203p5J1REv746yWQog8I6M/nsESjogTpS+Kx83Fbe7F8yb+Q==
   dependencies:
     hoist-non-react-statics "^3.3.2"
 
-next@^12.2.5:
+next@^12.3.1:
   version "12.3.1"
   resolved "https://registry.yarnpkg.com/next/-/next-12.3.1.tgz#127b825ad2207faf869b33393ec8c75fe61e50f1"
   integrity sha512-l7bvmSeIwX5lp07WtIiP9u2ytZMv7jIeB8iacR28PuUEFG5j0HGAPnMqyG5kbZNBG2H7tRsrQ4HCjuMOPnANZw==
@@ -5349,10 +5349,10 @@ stylis@4.0.13:
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.0.13.tgz#f5db332e376d13cc84ecfe5dace9a2a51d954c91"
   integrity sha512-xGPXiFVl4YED9Jh7Euv2V220mriG9u4B2TA6Ybjc1catrstKD2PpIdU3U0RKpkVBC2EhmL/F0sPCr9vrFTNRag==
 
-superjson@^1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/superjson/-/superjson-1.9.1.tgz#e23bd2e8cf0f4ade131d6d769754cac7eaa8ab34"
-  integrity sha512-oT3HA2nPKlU1+5taFgz/HDy+GEaY+CWEbLzaRJVD4gZ7zMVVC4GDNFdgvAZt6/VuIk6D2R7RtPAiCHwmdzlMmg==
+superjson@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/superjson/-/superjson-1.10.0.tgz#279362e6c1789b0b6bdfa280e82ee43d0e0fa514"
+  integrity sha512-ks6I5fm5KXUbDqt4Epe1VwkKDaC9+kIj5HF7yhiHjChFne0EkFqsnTv1mdHE2IT6fq2CzLC3zeA/fw0BRIoNwA==
   dependencies:
     copy-anything "^3.0.2"
 

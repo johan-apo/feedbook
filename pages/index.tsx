@@ -1,6 +1,6 @@
 import { Grid } from "@mantine/core";
 import { InferGetServerSidePropsType } from "next";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { setPosts } from "../app/features/posts/postsSlice";
 import { useAppDispatch } from "../app/hooks";
 import LeftPanel from "../components/Home/Left";
@@ -12,7 +12,10 @@ const Home = ({
   feed,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const dispatch = useAppDispatch();
-  dispatch(setPosts(feed));
+
+  useEffect(() => {
+    dispatch(setPosts(feed));
+  }, [feed]);
 
   return (
     <Grid>

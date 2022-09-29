@@ -3,8 +3,8 @@ import { InferGetServerSidePropsType } from "next";
 import { ReactElement, useEffect } from "react";
 import { setPosts } from "../app/features/posts/postsSlice";
 import { useAppDispatch } from "../app/hooks";
-import LeftPanel from "../components/Home/Left";
-import RightPanel from "../components/Home/Right";
+import SearchPanel from "../components/Home/SearchPanel";
+import PostsTray from "../components/Home/PostsTray";
 import Layout from "../components/Layout";
 import { getPosts } from "../prisma/queries";
 
@@ -20,10 +20,10 @@ const Home = ({
   return (
     <Grid>
       <Grid.Col md={12} lg={4}>
-        <LeftPanel />
+        <SearchPanel />
       </Grid.Col>
       <Grid.Col md={12} lg={8}>
-        <RightPanel />
+        <PostsTray />
       </Grid.Col>
     </Grid>
   );

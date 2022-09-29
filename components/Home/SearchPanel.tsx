@@ -1,7 +1,7 @@
 import { useUser } from "@auth0/nextjs-auth0";
 import { Paper, Text } from "@mantine/core";
 
-const LeftPanel = () => {
+const SearchPanel = () => {
   const { user } = useUser();
 
   return (
@@ -22,4 +22,4 @@ const LeftPanel = () => {
   );
 };
 
-export default LeftPanel;
+export default SearchPanel;

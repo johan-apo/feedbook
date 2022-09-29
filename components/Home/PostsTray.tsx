@@ -7,7 +7,7 @@ import AddPostModal from "../AddPostModal";
 import PaperContainer from "../common/PaperContainer";
 import FeedbackPost from "../FeedbackPost";
 
-const RightPanel = () => {
+const PostsTray = () => {
   const posts = useAppSelector(selectPosts);
   const { isLoading, value: currentLoggedInUser } = useAppSelector((state) => state.user);
   const [opened, setOpened] = useState(false);
@@ -32,7 +32,7 @@ const RightPanel = () => {
   );
 };
 
-export default RightPanel;
+export default PostsTray;
 
 /* -------------------------------------------------------------------------- */
 

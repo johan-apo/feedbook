@@ -8,6 +8,9 @@ export type GetPostsRESULT = Awaited<ReturnType<typeof getPosts>>;
 export type Post = ArrElement<GetPostsRESULT>;
 export type CreatePostRESULT = Awaited<ReturnType<typeof createPost>>;
 export type GetUserByIdRESULT = Awaited<ReturnType<typeof getUserById>>;
+export type GetUsersByUsernameRESULT = Awaited<
+  ReturnType<typeof getUsersByUsername>
+>;
 export type LikeOrDislikePostRESULT = Awaited<
   ReturnType<typeof likeOrDislikePost>
 >;
@@ -187,6 +190,22 @@ export const deletePostById = async (postId: string) => {
     include: {
       likes: true,
     },
+  });
+};
+
+export const getUsersByUsername = async (username: string) => {
+  return prismaClient.user.findMany({
+    where: {
+      username: {
+        contains: username,
+      },
+    },
+    select: {
+      username: true,
+      id: true,
+      picture: true,
+    },
+    take: 5,
   });
 };
 

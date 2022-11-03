@@ -1,6 +1,6 @@
 import { Button, Group, Skeleton, Text } from "@mantine/core";
 import Link from "next/link";
-import { News } from "tabler-icons-react";
+import { Message, News } from "tabler-icons-react";
 import { useAppSelector } from "../app/hooks";
 import ProfileMenu from "./ProfileMenu";
 
@@ -52,12 +52,19 @@ const Header = () => {
         {isLoading ? (
           <UserSkeleton />
         ) : currentLoggedInUser ? (
-          <ProfileMenu
-            email={currentLoggedInUser.email}
-            nickname={currentLoggedInUser.username}
-            picture={currentLoggedInUser.picture}
-            userId={currentLoggedInUser.id}
-          />
+          <Group>
+            <Link href="/chat">
+              <Button variant="subtle" leftIcon={<Message />}>
+                Chat
+              </Button>
+            </Link>
+            <ProfileMenu
+              email={currentLoggedInUser.email}
+              nickname={currentLoggedInUser.username}
+              picture={currentLoggedInUser.picture}
+              userId={currentLoggedInUser.id}
+            />
+          </Group>
         ) : (
           <SignUpLogInButtons />
         )}
